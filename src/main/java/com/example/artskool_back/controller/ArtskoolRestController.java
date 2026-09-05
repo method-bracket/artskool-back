@@ -6,17 +6,28 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
+@CrossOrigin
 @RequestMapping("/artskool")
 public class ArtskoolRestController {
     private final ArtskoolService artskoolService;
 
     ArtskoolRestController(ArtskoolService artskoolService) {
         this.artskoolService = artskoolService;
+    }
+
+    @GetMapping("/events")
+    public ResponseEntity<List<Event>> getAllEvents() {
+        List<Event> allEvents = artskoolService.findAllEvents();
+
+        return ResponseEntity.ok(allEvents);
     }
 
     @Operation(description = "Returns the nearest upcoming event, or the ongoing event. " +
@@ -32,5 +43,12 @@ public class ArtskoolRestController {
         Event upcomingEvent = artskoolService.findNearestUpcomingEvent();
 
         return ResponseEntity.ok(upcomingEvent);
+    }
+
+    @GetMapping("/finished")
+    public ResponseEntity<Event> getLastFinishedEvent() {
+        Event lastFinishedEvent = artskoolService.findLastFinishedEvent();
+
+        return ResponseEntity.ok(lastFinishedEvent);
     }
 }
